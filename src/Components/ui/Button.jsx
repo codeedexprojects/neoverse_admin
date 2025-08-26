@@ -1,0 +1,57 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
+const Button = ({
+  type = 'button',
+  onClick,
+  className = '',
+  children,
+  fullWidth = false,
+  variant = 'yellow',
+  icon: Icon,
+  iconPosition = 'left',
+  ...props
+}) => {
+  const baseStyle =
+    'font-semibold px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2';
+
+  const variants = {
+    yellow: 'bg-yellow-400 hover:bg-yellow-500 text-white',
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+    danger: 'bg-red-500 hover:bg-red-600 text-white',
+    neutral: 'bg-gray-200 hover:bg-gray-300 text-black',
+    gradient: 'bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
+  };
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      className={clsx(
+        baseStyle,
+        variants[variant],
+        fullWidth ? 'w-full' : '',
+        className
+      )}
+      {...props}
+    >
+      {iconPosition === 'left' && Icon && <Icon className="w-5 h-5" />}
+      {children}
+      {iconPosition === 'right' && Icon && <Icon className="w-5 h-5" />}
+    </button>
+  );
+};
+
+Button.propTypes = {
+  type: PropTypes.oneOf(['button', 'submit', 'reset']),
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  fullWidth: PropTypes.bool,
+  variant: PropTypes.oneOf(['yellow', 'primary', 'danger', 'neutral']),
+  icon: PropTypes.elementType,
+  iconPosition: PropTypes.oneOf(['left', 'right']),
+};
+
+export default Button;
