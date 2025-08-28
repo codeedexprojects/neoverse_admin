@@ -5,6 +5,7 @@ import NoteCard from "../Components/Modas/NoteCard";
 import AddNoteModal from "../Components/Modas/AddNoteModal";
 import EditNoteModal from "../Components/Modas/EditNoteModal";
 import DeleteConfirmationModal from "../../../Components/shared/DeleteModal";
+import { toast, Toaster } from "sonner";
 
 const NoteList = () => {
   const [notes, setNotes] = useState([]);
@@ -15,6 +16,7 @@ const NoteList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [editingNote, setEditingNote] = useState({
     title: "",
     description: "",
@@ -22,8 +24,8 @@ const NoteList = () => {
   });
 
   const handleEditClick = (note) => {
-    setEditingNote(note); // Load note data into state
-    setIsEditModalOpen(true); // Open modal
+    setEditingNote(note);
+    setIsEditModalOpen(true);
   };
 
   const handleNoteUpdate = (updatedNote) => {
@@ -69,11 +71,22 @@ const NoteList = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (noteToDelete) {
-      setNotes(notes.filter((n) => n._id !== noteToDelete._id));
-      setNoteToDelete(null);
+  const handleConfirmDelete = async () => {
+    if (!noteToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteNote(noteToDelete._id);
+      setNotes((prev) => prev.filter((n) => n._id !== noteToDelete._id));
+      toast.success("Note deleted successfully");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to delete note";
+      toast.error(errorMessage);
+    } finally {
+      setIsDeleting(false);
       setIsDeleteModalOpen(false);
+      setNoteToDelete(null);
     }
   };
 
@@ -123,7 +136,7 @@ const NoteList = () => {
             <NoteCard
               key={note._id}
               note={note}
-              onDelete={() => handleOpenDeleteModal()}
+              onDelete={() => handleOpenDeleteModal(note)}
               onEdit={() => handleEditClick(note)}
             />
           ))}
@@ -150,7 +163,7 @@ const NoteList = () => {
           onClose={() => setIsDeleteModalOpen(false)}
           onConfirm={handleConfirmDelete}
           itemName={noteToDelete?.title}
-          isLoading={false}
+          isLoading={isDeleting}
         />
         <EditNoteModal
           isOpen={isEditModalOpen}
@@ -159,6 +172,7 @@ const NoteList = () => {
           onUpdate={handleNoteUpdate}
         />
       </div>
+      <Toaster position="top-right" richColors />
     </div>
   );
 };

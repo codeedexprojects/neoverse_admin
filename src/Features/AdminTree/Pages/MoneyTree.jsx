@@ -1,180 +1,39 @@
-import React, { useState } from 'react';
-import { User, DollarSign, Calendar, TrendingUp, Plus, Mail, Award, UserPlus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, DollarSign, Calendar, TrendingUp, Plus, Mail, Award, UserPlus, Trash2, Loader } from 'lucide-react';
+import { adminTree } from '../api';
 
 const MoneyTree = () => {
   const [selectedNode, setSelectedNode] = useState(null);
   const [hoveredNode, setHoveredNode] = useState(null);
   const [expandedNodes, setExpandedNodes] = useState(new Set(['root']));
+  const [treeData, setTreeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const treeData = {
-    "type": "admin",
-    "_id": "68a8585f018157f227751b4c",
-    "userId": "UK040B926523",
-    "referralId": "ADMYQ96Q",
-    "firstName": "Admin",
-    "lastName": "Test",
-    "email": "adminneoverse@gmail.com",
-    "leftCount": 1,
-    "rightCount": 0,
-    "status": "active",
-    "left": [
-      {
-        "type": "user",
-        "_id": "68a85a6c018157f227751b60",
-        "userId": "UK050B532923",
-        "referralId": "CADWL5I7",
-        "firstName": "jubair",
-        "lastName": "jubi",
-        "email": "jubair@gmail.com",
-        "position": "left",
-        "botPlan": {
-          "_id": "68a8587c018157f227751b52",
-          "name": "testBot",
-          "price": "520"
-        },
-        "status": "active",
-        "leftCount": 1,
-        "rightCount": 1,
-        "left": [
-          {
-            "type": "user",
-            "_id": "68a9692ff7e036fbf098bf44",
-            "userId": "UK172395923",
-            "referralId": "USRDM7VC",
-            "firstName": "kaja",
-            "lastName": "hussain",
-            "email": "kaja@gmail.com",
-            "position": "left",
-            "botPlan": {
-              "_id": "68a8587c018157f227751b52",
-              "name": "testBot",
-              "price": "520"
-            },
-            "status": "pending",
-            "leftCount": 2,
-            "rightCount": 0,
-            "left": [
-              {
-                "userId": "UK191208923",
-                "firstName": "Alice",
-                "lastName": "Smith",
-                "email": "alice@gmail.com",
-                "status": "pending",
-                "leftCount": 0,
-                "rightCount": 1,
-                "left": [],
-                "right": [
-                  {
-                    "userId": "UK290370574",
-                    "firstName": "Bob",
-                    "lastName": "Johnson",
-                    "status": "active",
-                    "leftCount": 0,
-                    "rightCount": 0,
-                    "left": [],
-                    "right": []
-                  }
-                ]
-              },
-              {
-                "userId": "UK220327214",
-                "firstName": "Carol",
-                "lastName": "Wilson",
-                "status": "active",
-                "leftCount": 0,
-                "rightCount": 1,
-                "left": [],
-                "right": [
-                  {
-                    "userId": "UK100300004",
-                    "firstName": "David",
-                    "lastName": "Brown",
-                    "status": "active",
-                    "leftCount": 0,
-                    "rightCount": 0,
-                    "left": [],
-                    "right": []
-                  }
-                ]
-              }
-            ],
-            "right": []
-          }
-        ],
-        "right": [
-          {
-            "type": "user",
-            "userId": "UK280B597023",
-            "firstName": "shafeeq",
-            "lastName": "nc",
-            "email": "shafeeq@gmail.com",
-            "position": "right",
-            "status": "active",
-            "leftCount": 2,
-            "rightCount": 2,
-            "left": [
-              {
-                "userId": "UK150137723",
-                "firstName": "Emma",
-                "lastName": "Davis",
-                "status": "pending",
-                "leftCount": 1,
-                "rightCount": 1,
-                "left": [
-                  {
-                    "userId": "UK201503523",
-                    "firstName": "Frank",
-                    "lastName": "Miller",
-                    "status": "active",
-                    "leftCount": 0,
-                    "rightCount": 0,
-                    "left": [],
-                    "right": []
-                  }
-                ],
-                "right": []
-              }
-            ],
-            "right": [
-              {
-                "userId": "UK310372523",
-                "firstName": "Grace",
-                "lastName": "Taylor",
-                "status": "pending",
-                "leftCount": 1,
-                "rightCount": 1,
-                "left": [
-                  {
-                    "userId": "UK170674044",
-                    "firstName": "Henry",
-                    "lastName": "Anderson",
-                    "status": "active",
-                    "leftCount": 0,
-                    "rightCount": 0,
-                    "left": [],
-                    "right": []
-                  }
-                ],
-                "right": [
-                  {
-                    "userId": "UK300921423",
-                    "firstName": "Ivy",
-                    "lastName": "Thomas",
-                    "status": "pending",
-                    "leftCount": 0,
-                    "rightCount": 0,
-                    "left": [],
-                    "right": []
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+
+
+  // Load data on component mount
+  useEffect(() => {
+    const loadTreeData = async () => {
+      try {
+        setLoading(true);
+        const apiResponse = await adminTree();
+        if (apiResponse && apiResponse.tree) {
+          setTreeData(apiResponse.tree);
+          setExpandedNodes(new Set([apiResponse.tree.userId])); // Expand root node
+        } else {
+          setError('Invalid API response structure');
+        }
+      } catch (err) {
+        setError('Failed to load tree data');
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    ],
-    "right": []
-  };
+    };
+
+    loadTreeData();
+  }, []);
 
   const handleNodeClick = (nodeId) => {
     setSelectedNode(nodeId);
@@ -198,7 +57,7 @@ const MoneyTree = () => {
   const NodeCircle = ({ nodeData, x, y, level = 0 }) => {
     const isSelected = selectedNode === nodeData.userId;
     const isHovered = hoveredNode === nodeData.userId;
-    const isActive = nodeData.status === 'active';
+    const isActive = nodeData.status === 'approved' || nodeData.status === 'active';
     
     return (
       <g>
@@ -215,7 +74,6 @@ const MoneyTree = () => {
           onMouseLeave={handleNodeLeave}
         />
         
-        {/* User icon */}
         <foreignObject
           x={x - 10}
           y={y - 10}
@@ -226,7 +84,6 @@ const MoneyTree = () => {
           <User className="w-5 h-5 text-white" />
         </foreignObject>
         
-        {/* User ID label below circle */}
         <rect
           x={x - 40}
           y={y + 35}
@@ -253,7 +110,7 @@ const MoneyTree = () => {
             x={x + 40}
             y={y - 80}
             width="280"
-            height="180"
+            height="200"
             className="pointer-events-none z-10"
           >
             <div className="bg-white border-2 border-gray-300 rounded-lg shadow-xl p-4 text-sm">
@@ -268,13 +125,13 @@ const MoneyTree = () => {
                 {nodeData.email && (
                   <div className="flex items-center space-x-2">
                     <Mail className="w-3 h-3 text-green-600" />
-                    <span>{nodeData.email}</span>
+                    <span className="text-xs">{nodeData.email}</span>
                   </div>
                 )}
                 {nodeData.referralId && (
                   <div className="flex items-center space-x-2">
                     <Award className="w-3 h-3 text-purple-600" />
-                    <span>Referral: {nodeData.referralId}</span>
+                    <span>Ref: {nodeData.referralId}</span>
                   </div>
                 )}
                 {nodeData.botPlan && (
@@ -292,6 +149,13 @@ const MoneyTree = () => {
                 <div className="text-xs text-gray-500 mt-2 text-center border-t pt-2">
                   Left: {nodeData.leftCount || 0} | Right: {nodeData.rightCount || 0}
                 </div>
+                {nodeData.type && (
+                  <div className="text-xs text-center">
+                    <span className={`px-2 py-1 rounded ${nodeData.type === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+                      {nodeData.type.toUpperCase()}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </foreignObject>
@@ -319,7 +183,6 @@ const MoneyTree = () => {
     
     return (
       <g>
-        {/* Add button circle */}
         <circle
           cx={x}
           cy={y}
@@ -333,7 +196,6 @@ const MoneyTree = () => {
           onClick={() => alert(`Add new user to ${position} of ${parentData.firstName} ${parentData.lastName}`)}
         />
         
-        {/* Plus icon */}
         <foreignObject
           x={x - 8}
           y={y - 8}
@@ -344,7 +206,6 @@ const MoneyTree = () => {
           <UserPlus className="w-4 h-4 text-white" />
         </foreignObject>
         
-        {/* Empty slot label */}
         <rect
           x={x - 30}
           y={y + 30}
@@ -363,13 +224,12 @@ const MoneyTree = () => {
           Empty
         </text>
         
-        {/* Hover tooltip */}
         {isHovered && (
           <foreignObject
             x={x + 30}
             y={y - 20}
             width="120"
-            height="40"
+            height="30"
             className="pointer-events-none"
           >
             <div className="bg-gray-800 text-white text-xs rounded px-2 py-1 shadow-lg">
@@ -381,12 +241,12 @@ const MoneyTree = () => {
     );
   };
 
-  // Recursive function to render tree nodes
   const renderTreeNode = (nodeData, x, y, level = 0) => {
+    if (!nodeData) return [];
+    
     const isExpanded = expandedNodes.has(nodeData.userId);
     const elements = [];
     
-    // Add the current node
     elements.push(
       <NodeCircle 
         key={nodeData.userId} 
@@ -397,9 +257,9 @@ const MoneyTree = () => {
       />
     );
     
-    if (isExpanded && level < 4) { // Limit depth for display
-      const childY = y + 100;
-      const spacing = Math.max(80, 200 / (level + 1));
+    if (isExpanded && level < 4) { 
+      const childY = y + 120;
+      const spacing = Math.max(100, 250 / (level + 1));
       const leftX = x - spacing;
       const rightX = x + spacing;
       
@@ -449,35 +309,69 @@ const MoneyTree = () => {
     return elements;
   };
 
-  return (
-    <div className="w-full min-h-screen p-8">
-      <div >
-
-        
-        <div >
-          <svg width="100%" height="700" viewBox="0 0 1200 700" className="rounded-lg">
-            {/* Background gradient */}
-            <defs>
-              <radialGradient id="bgGradient" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#4B5563" />
-                <stop offset="100%" stopColor="#374151" />
-              </radialGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#bgGradient)" />
-
-            {/* Render the tree starting from root */}
-            {renderTreeNode(treeData, 600, 80)}
-          </svg>
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Loader className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-lg text-gray-600">Loading admin tree...</p>
         </div>
-      
-        
-       
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg">
+            <h3 className="font-bold text-lg mb-2">Error Loading Tree</h3>
+            <p>{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No data state
+  if (!treeData) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <p className="text-lg text-gray-600">No tree data available</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full min-h-screen ">
+      <div className="p-4">
+        <div className=" rounded-lg shadow-lg">
+          
+          <div className="p-4">
+            <svg 
+              width="100%" 
+              height="800" 
+              viewBox="0 0 1400 800" 
+             
+            >
+              <rect width="100%" height="100%" fill="#F9FAFB" />
+              {renderTreeNode(treeData, 700, 80)}
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default MoneyTree;
-
-
-
