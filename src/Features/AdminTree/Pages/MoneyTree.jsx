@@ -1,18 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { User, DollarSign, Calendar, TrendingUp, Plus, Mail, Award, UserPlus, Trash2, Loader } from 'lucide-react';
-import { adminTree } from '../api';
+import React, { useState, useEffect } from "react";
+import {
+  User,
+  DollarSign,
+  Calendar,
+  TrendingUp,
+  Plus,
+  Mail,
+  Award,
+  UserPlus,
+  Trash2,
+  Loader,
+} from "lucide-react";
+import { adminTree } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const MoneyTree = () => {
   const [selectedNode, setSelectedNode] = useState(null);
   const [hoveredNode, setHoveredNode] = useState(null);
-  const [expandedNodes, setExpandedNodes] = useState(new Set(['root']));
+  const [expandedNodes, setExpandedNodes] = useState(new Set(["root"]));
   const [treeData, setTreeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const navigate = useNavigate();
 
-
-  // Load data on component mount
   useEffect(() => {
     const loadTreeData = async () => {
       try {
@@ -20,12 +31,12 @@ const MoneyTree = () => {
         const apiResponse = await adminTree();
         if (apiResponse && apiResponse.tree) {
           setTreeData(apiResponse.tree);
-          setExpandedNodes(new Set([apiResponse.tree.userId])); // Expand root node
+          setExpandedNodes(new Set([apiResponse.tree.userId]));
         } else {
-          setError('Invalid API response structure');
+          setError("Invalid API response structure");
         }
       } catch (err) {
-        setError('Failed to load tree data');
+        setError("Failed to load tree data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -57,8 +68,9 @@ const MoneyTree = () => {
   const NodeCircle = ({ nodeData, x, y, level = 0 }) => {
     const isSelected = selectedNode === nodeData.userId;
     const isHovered = hoveredNode === nodeData.userId;
-    const isActive = nodeData.status === 'approved' || nodeData.status === 'active';
-    
+    const isActive =
+      nodeData.status === "approved" || nodeData.status === "active";
+
     return (
       <g>
         <circle
@@ -73,7 +85,6 @@ const MoneyTree = () => {
           onMouseEnter={() => handleNodeHover(nodeData.userId)}
           onMouseLeave={handleNodeLeave}
         />
-        
         <foreignObject
           x={x - 10}
           y={y - 10}
@@ -83,7 +94,6 @@ const MoneyTree = () => {
         >
           <User className="w-5 h-5 text-white" />
         </foreignObject>
-        
         <rect
           x={x - 40}
           y={y + 35}
@@ -103,8 +113,6 @@ const MoneyTree = () => {
         >
           {nodeData.userId}
         </text>
-        
-        {/* Hover tooltip */}
         {isHovered && (
           <foreignObject
             x={x + 40}
@@ -137,21 +145,34 @@ const MoneyTree = () => {
                 {nodeData.botPlan && (
                   <div className="flex items-center space-x-2">
                     <DollarSign className="w-3 h-3 text-green-600" />
-                    <span>{nodeData.botPlan.name} (${nodeData.botPlan.price})</span>
+                    <span>
+                      {nodeData.botPlan.name} (${nodeData.botPlan.price})
+                    </span>
                   </div>
                 )}
                 <div className="flex items-center space-x-2">
                   <TrendingUp className="w-3 h-3 text-orange-600" />
-                  <span className={`font-semibold ${isActive ? 'text-green-600' : 'text-orange-600'}`}>
+                  <span
+                    className={`font-semibold ${
+                      isActive ? "text-green-600" : "text-orange-600"
+                    }`}
+                  >
                     {nodeData.status?.toUpperCase()}
                   </span>
                 </div>
                 <div className="text-xs text-gray-500 mt-2 text-center border-t pt-2">
-                  Left: {nodeData.leftCount || 0} | Right: {nodeData.rightCount || 0}
+                  Left: {nodeData.leftCount || 0} | Right:{" "}
+                  {nodeData.rightCount || 0}
                 </div>
                 {nodeData.type && (
                   <div className="text-xs text-center">
-                    <span className={`px-2 py-1 rounded ${nodeData.type === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+                    <span
+                      className={`px-2 py-1 rounded ${
+                        nodeData.type === "admin"
+                          ? "bg-purple-100 text-purple-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
                       {nodeData.type.toUpperCase()}
                     </span>
                   </div>
@@ -168,19 +189,46 @@ const MoneyTree = () => {
     const parentBottom = y1 + 30;
     const childTop = y2 - 30;
     const midY = parentBottom + (childTop - parentBottom) / 2;
-    
+
     return (
       <g>
-        <line x1={x1} y1={parentBottom} x2={x1} y2={midY} stroke="#F59E0B" strokeWidth="2" />
-        <line x1={x1} y1={midY} x2={x2} y2={midY} stroke="#F59E0B" strokeWidth="2" />
-        <line x1={x2} y1={midY} x2={x2} y2={childTop} stroke="#F59E0B" strokeWidth="2" />
+        <line
+          x1={x1}
+          y1={parentBottom}
+          x2={x1}
+          y2={midY}
+          stroke="#F59E0B"
+          strokeWidth="2"
+        />
+        <line
+          x1={x1}
+          y1={midY}
+          x2={x2}
+          y2={midY}
+          stroke="#F59E0B"
+          strokeWidth="2"
+        />
+        <line
+          x1={x2}
+          y1={midY}
+          x2={x2}
+          y2={childTop}
+          stroke="#F59E0B"
+          strokeWidth="2"
+        />
       </g>
     );
   };
 
   const AddButton = ({ x, y, parentData, position }) => {
     const [isHovered, setIsHovered] = useState(false);
-    
+
+    const handleAddUser = () => {
+      navigate(
+        `/create-user?placementId=${parentData.userId}&position=${position}`
+      );
+    };
+
     return (
       <g>
         <circle
@@ -193,9 +241,8 @@ const MoneyTree = () => {
           strokeWidth="2"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={() => alert(`Add new user to ${position} of ${parentData.firstName} ${parentData.lastName}`)}
+          onClick={handleAddUser}
         />
-        
         <foreignObject
           x={x - 8}
           y={y - 8}
@@ -205,7 +252,7 @@ const MoneyTree = () => {
         >
           <UserPlus className="w-4 h-4 text-white" />
         </foreignObject>
-        
+
         <rect
           x={x - 30}
           y={y + 30}
@@ -223,7 +270,6 @@ const MoneyTree = () => {
         >
           Empty
         </text>
-        
         {isHovered && (
           <foreignObject
             x={x + 30}
@@ -243,73 +289,94 @@ const MoneyTree = () => {
 
   const renderTreeNode = (nodeData, x, y, level = 0) => {
     if (!nodeData) return [];
-    
     const isExpanded = expandedNodes.has(nodeData.userId);
     const elements = [];
-    
     elements.push(
-      <NodeCircle 
-        key={nodeData.userId} 
-        nodeData={nodeData} 
-        x={x} 
-        y={y} 
-        level={level} 
+      <NodeCircle
+        key={nodeData.userId}
+        nodeData={nodeData}
+        x={x}
+        y={y}
+        level={level}
       />
     );
-    
-    if (isExpanded && level < 4) { 
+
+    if (isExpanded && level < 4) {
       const childY = y + 120;
       const spacing = Math.max(100, 250 / (level + 1));
       const leftX = x - spacing;
       const rightX = x + spacing;
-      
-      // Render left child
       if (nodeData.left && nodeData.left.length > 0) {
         elements.push(
-          <ConnectionLine key={`conn-left-${nodeData.userId}`} x1={x} y1={y} x2={leftX} y2={childY} />
+          <ConnectionLine
+            key={`conn-left-${nodeData.userId}`}
+            x1={x}
+            y1={y}
+            x2={leftX}
+            y2={childY}
+          />
         );
-        elements.push(...renderTreeNode(nodeData.left[0], leftX, childY, level + 1));
+        elements.push(
+          ...renderTreeNode(nodeData.left[0], leftX, childY, level + 1)
+        );
       } else if (level < 3) {
         elements.push(
-          <ConnectionLine key={`conn-add-left-${nodeData.userId}`} x1={x} y1={y} x2={leftX} y2={childY} />
+          <ConnectionLine
+            key={`conn-add-left-${nodeData.userId}`}
+            x1={x}
+            y1={y}
+            x2={leftX}
+            y2={childY}
+          />
         );
         elements.push(
-          <AddButton 
-            key={`add-left-${nodeData.userId}`} 
-            x={leftX} 
-            y={childY} 
-            parentData={nodeData} 
-            position="left" 
+          <AddButton
+            key={`add-left-${nodeData.userId}`}
+            x={leftX}
+            y={childY}
+            parentData={nodeData}
+            position="left"
           />
         );
       }
-      
-      // Render right child
       if (nodeData.right && nodeData.right.length > 0) {
         elements.push(
-          <ConnectionLine key={`conn-right-${nodeData.userId}`} x1={x} y1={y} x2={rightX} y2={childY} />
+          <ConnectionLine
+            key={`conn-right-${nodeData.userId}`}
+            x1={x}
+            y1={y}
+            x2={rightX}
+            y2={childY}
+          />
         );
-        elements.push(...renderTreeNode(nodeData.right[0], rightX, childY, level + 1));
+        elements.push(
+          ...renderTreeNode(nodeData.right[0], rightX, childY, level + 1)
+        );
       } else if (level < 3) {
         elements.push(
-          <ConnectionLine key={`conn-add-right-${nodeData.userId}`} x1={x} y1={y} x2={rightX} y2={childY} />
+          <ConnectionLine
+            key={`conn-add-right-${nodeData.userId}`}
+            x1={x}
+            y1={y}
+            x2={rightX}
+            y2={childY}
+          />
         );
         elements.push(
-          <AddButton 
-            key={`add-right-${nodeData.userId}`} 
-            x={rightX} 
-            y={childY} 
-            parentData={nodeData} 
-            position="right" 
+          <AddButton
+            key={`add-right-${nodeData.userId}`}
+            x={rightX}
+            y={childY}
+            parentData={nodeData}
+            position="right"
           />
         );
       }
     }
-    
+
     return elements;
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-gray-50">
@@ -321,27 +388,6 @@ const MoneyTree = () => {
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg">
-            <h3 className="font-bold text-lg mb-2">Error Loading Tree</h3>
-            <p>{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // No data state
   if (!treeData) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-gray-50">
@@ -356,14 +402,8 @@ const MoneyTree = () => {
     <div className="w-full min-h-screen ">
       <div className="p-4">
         <div className=" rounded-lg shadow-lg">
-          
           <div className="p-4">
-            <svg 
-              width="100%" 
-              height="800" 
-              viewBox="0 0 1400 800" 
-             
-            >
+            <svg width="100%" height="800" viewBox="0 0 1400 800">
               <rect width="100%" height="100%" fill="#F9FAFB" />
               {renderTreeNode(treeData, 700, 80)}
             </svg>

@@ -12,6 +12,7 @@ import {
   MoveHorizontal,
   NotebookText,
   CoinsIcon,
+  User,
 } from "lucide-react";
 import { ROUTES } from "../../lib/constants";
 import { BsPeopleFill } from "react-icons/bs";
@@ -47,13 +48,13 @@ const Sidebar = () => {
       permission: "botlist",
     },
     {
-      name: "Admin Tree",
+      name: "Community",
       icon: <TreePalm size={20} />,
       path: ROUTES.ADMIN_TREE,
       permission: "tree",
     },
     {
-      name: "Admin Profiles",
+      name: "Admin Profile",
       icon: <BsPeopleFill size={20} />,
       path: ROUTES.GETPROFILE,
       permission: "profiles",
@@ -81,6 +82,12 @@ const Sidebar = () => {
       icon: <CoinsIcon size={20} />,
       path: ROUTES.INVESTMENT_WITHDRAWAL,
       permission: "investment",
+    },
+    {
+      name: "Users",
+      icon: <User size={20} />,
+      path: ROUTES.VIEW_USERS,
+      permission: "users",
     },
   ];
 
