@@ -74,12 +74,10 @@ const handleUpdateBot = async () => {
   try {
     const updatedData = {
       name: editingBot.name,
-      price: Number(editingBot.price) || 0, // ensure price is a number
+      price: Number(editingBot.price) || 0, 
     };
 
     const res = await updateBot(editingBot._id, updatedData);
-
-    // Update state immediately so UI reflects changes
     setBots((prevBots) =>
       prevBots.map((b) =>
         b._id === editingBot._id ? { ...b, ...res.data } : b

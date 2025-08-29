@@ -9,8 +9,13 @@ import {
   CreditCard,
   TrendingUp,
   TreePalm,
+  MoveHorizontal,
+  NotebookText,
+  CoinsIcon,
 } from "lucide-react";
 import { ROUTES } from "../../lib/constants";
+import { BsPeopleFill } from "react-icons/bs";
+import { BiMoney } from "react-icons/bi";
 const Sidebar = () => {
   const location = useLocation();
   const [isHovered, setIsHovered] = useState(false);
@@ -44,8 +49,38 @@ const Sidebar = () => {
     {
       name: "Admin Tree",
       icon: <TreePalm size={20} />,
-      path: ROUTES.LOGIN,
+      path: ROUTES.ADMIN_TREE,
       permission: "tree",
+    },
+    {
+      name: "Admin Profiles",
+      icon: <BsPeopleFill size={20} />,
+      path: ROUTES.GETPROFILE,
+      permission: "profiles",
+    },
+    {
+      name: "WithDrawals",
+      icon: <MoveHorizontal size={20} />,
+      path: ROUTES.WITHDRAWAL,
+      permission: "withdrawal",
+    },
+    {
+      name: "Notes",
+      icon: <NotebookText size={20} />,
+      path: ROUTES.NOTE,
+      permission: "notelists",
+    },
+    {
+      name: "Investments",
+      icon: <BiMoney size={20} />,
+      path: ROUTES.INVESTMENT,
+      permission: "investment",
+    },
+    {
+      name: "Investment-Withdrawal",
+      icon: <CoinsIcon size={20} />,
+      path: ROUTES.INVESTMENT_WITHDRAWAL,
+      permission: "investment",
     },
   ];
 
@@ -173,7 +208,6 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Footer Section */}
       <div className="border-t border-slate-700 px-2 py-4">
         {filteredFooterItems.map((item, index) => (
           <RouterLink
