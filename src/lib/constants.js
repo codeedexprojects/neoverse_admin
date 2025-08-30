@@ -12,6 +12,7 @@ INVESTMENT_WITHDRAWAL: "/investment-withdrawal",
 USERS: "/create-user",
 VIEW_USERS: "/user-view",
 VIEWUSER_PROFILE: "/profile/:userId",
+USERLOGIN: "/user/login",
 
 }
 
@@ -27,4 +28,5 @@ NOTE: `${BASE_URL}/admin/note`,
 INVESTMENT: `${BASE_URL}/admin/investment`,
 INVESTMENT_WITHDRAWAL: `${BASE_URL}/admin/investmentwithdrawal`,
 USERS: `${BASE_URL}/admin/user`,
+DASHBOARD: `${BASE_URL}/admin/dashboard`,
 }

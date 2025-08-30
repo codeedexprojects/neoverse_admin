@@ -3,7 +3,6 @@ import "./App.css";
 import AdminLayout from "./layout/AdminLayout";
 import { ROUTES } from "./lib/constants";
 import Login from "./Features/Auth/Pages/Login";
-import Dasboard from "./Features/Auth/Components/Dasboard";
 import CreateBot from "./Features/AddUsers/Pages/CreateBot";
 import ListProfiles from "./Features/AdminProfiles/Pages/ListProfiles";
 import MoneyTree from "./Features/AdminTree/Pages/MoneyTree";
@@ -14,13 +13,15 @@ import InvestWithdrawalList from "./Features/InvestmentWithdrawal/Pages/InvestWi
 import Usercreate from "./Features/Users/Pages/Usercreate";
 import GetUsers from "./Features/Users/Pages/GetUsers";
 import ViewUsers from "./Features/Users/Pages/ViewUsers";
+import Dashboard from "./Features/Dashboard/Pages/Dashboard";
+import UserLogin from "./User Side/UserAuth/Pages/Login";
 
 function App() {
   return (
     <Routes>
       <Route element={<AdminLayout />}>
-        <Route path={ROUTES.DASHBOARD} element={<Dasboard />} />
         <Route path={ROUTES.BOT} element={<CreateBot />} />
+        <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
         <Route path={ROUTES.ADMIN_TREE} element={<MoneyTree />} />
         <Route path={ROUTES.GETPROFILE} element={<ListProfiles />} />
         <Route path={ROUTES.WITHDRAWAL} element={<Withdrawals />} />
@@ -32,6 +33,7 @@ function App() {
         <Route path={ROUTES.VIEWUSER_PROFILE} element={<ViewUsers />} />
       </Route>
       <Route path={ROUTES.LOGIN} element={<Login />} />
+      <Route path={ROUTES.USERLOGIN} element={<UserLogin />} />
     </Routes>
   );
 }
