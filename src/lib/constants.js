@@ -9,6 +9,9 @@ WITHDRAWAL: "/withdrawals",
 NOTE: "/note-list",
 INVESTMENT: "/investment",
 INVESTMENT_WITHDRAWAL: "/investment-withdrawal",
+USERS: "/create-user",
+VIEW_USERS: "/user-view",
+VIEWUSER_PROFILE: "/profile/:userId",
 
 }
 
@@ -24,5 +27,4 @@ NOTE: `${BASE_URL}/admin/note`,
 INVESTMENT: `${BASE_URL}/admin/investment`,
 INVESTMENT_WITHDRAWAL: `${BASE_URL}/admin/investmentwithdrawal`,
 USERS: `${BASE_URL}/admin/user`,
-
 }
