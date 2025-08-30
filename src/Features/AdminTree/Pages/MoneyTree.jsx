@@ -24,6 +24,9 @@ const MoneyTree = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [showUserTree, setShowUserTree] = useState(false);
   const [userTreeLoading, setUserTreeLoading] = useState(false);
+  
+  // Store the original expanded nodes when switching to user tree
+  const [originalExpandedNodes, setOriginalExpandedNodes] = useState(new Set());
 
   const navigate = useNavigate();
 
@@ -73,6 +76,9 @@ const MoneyTree = () => {
   const loadUserTree = async (userId) => {
     try {
       setUserTreeLoading(true);
+      // Store the current expanded nodes before switching to user tree
+      setOriginalExpandedNodes(new Set(expandedNodes));
+      
       const apiResponse = await adminUserTree(userId);
       console.log(apiResponse);
       
@@ -114,7 +120,8 @@ const MoneyTree = () => {
     setShowUserTree(false);
     setUserTreeData(null);
     setCurrentUserId(null);
-    setExpandedNodes(new Set());
+    // Restore the original expanded nodes
+    setExpandedNodes(originalExpandedNodes);
   };
 
   const handleNodeHover = (nodeId) => {
