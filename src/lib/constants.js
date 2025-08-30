@@ -29,4 +29,7 @@ INVESTMENT: `${BASE_URL}/admin/investment`,
 INVESTMENT_WITHDRAWAL: `${BASE_URL}/admin/investmentwithdrawal`,
 USERS: `${BASE_URL}/admin/user`,
 DASHBOARD: `${BASE_URL}/admin/dashboard`,
+// users
+USERLOGIN: `${BASE_URL}/user/auth`,
 }
+
