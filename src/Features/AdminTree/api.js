@@ -22,3 +22,17 @@ export const adminTree = async () => {
     console.error("Failed to get the tree");
   }
 };
+
+
+export const adminUserTree = async (id) => {
+  try {
+    const response = await axios.get(
+      `${API_ENDOPOINTS.USERS}/tree/${id}`,
+      getAuthHeader(),
+      {}
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to get the tree");
+  }
+};

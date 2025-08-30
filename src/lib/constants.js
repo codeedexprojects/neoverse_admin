@@ -23,4 +23,6 @@ WITHDRAWAL: `${BASE_URL}/admin/withdrawal`,
 NOTE: `${BASE_URL}/admin/note`,
 INVESTMENT: `${BASE_URL}/admin/investment`,
 INVESTMENT_WITHDRAWAL: `${BASE_URL}/admin/investmentwithdrawal`,
+USERS: `${BASE_URL}/admin/user`,
+
 }
