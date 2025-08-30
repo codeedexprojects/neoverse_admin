@@ -22,7 +22,7 @@ export default function UserLogin() {
       const response = await UserLogins(formData);
       console.log("response", response);
 
-      localStorage.setItem("adminToken", response.accessToken);
+      localStorage.setItem("userToken", response.accessToken);
       localStorage.setItem("refreshToken", response.refreshToken);
       toast.success("Loggined Successfully");
       setTimeout(() => {
@@ -68,12 +68,10 @@ export default function UserLogin() {
             </h1>
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* User ID */}
             <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-blue-100"
-              >
-                UserId
+              <label className="block text-sm font-medium text-blue-100">
+                User ID
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -82,7 +80,7 @@ export default function UserLogin() {
                 <input
                   id="userId"
                   name="userId"
-                  type="userId"
+                  type="text"
                   required
                   value={formData.userId}
                   onChange={handleInputChange}
@@ -91,11 +89,10 @@ export default function UserLogin() {
                 />
               </div>
             </div>
+
+            {/* Password */}
             <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-blue-100"
-              >
+              <label className="block text-sm font-medium text-blue-100">
                 Password
               </label>
               <div className="relative">
@@ -117,18 +114,16 @@ export default function UserLogin() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-blue-300 hover:text-white transition-colors"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
             </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
