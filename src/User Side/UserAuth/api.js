@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_ENDOPOINTS } from "../../lib/constants";
 
 
-export const UserLogin = async(data)=>{
+export const UserLogins = async(data)=>{
     try{
         const response = await axios.post(`${API_ENDOPOINTS.USERLOGIN}`,data,{
 

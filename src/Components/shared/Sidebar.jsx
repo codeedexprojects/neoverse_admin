@@ -53,12 +53,7 @@ const Sidebar = () => {
       path: ROUTES.ADMIN_TREE,
       permission: "tree",
     },
-    {
-      name: "Admin Profile",
-      icon: <BsPeopleFill size={20} />,
-      path: ROUTES.GETPROFILE,
-      permission: "profiles",
-    },
+  
     {
       name: "WithDrawals",
       icon: <MoveHorizontal size={20} />,
@@ -92,6 +87,13 @@ const Sidebar = () => {
   ];
 
   const footerItems = [
+   
+     {
+      name: "Admin Profile",
+      icon: <BsPeopleFill size={20} />,
+      path: ROUTES.GETPROFILE,
+      permission: "profiles",
+    },
     {
       name: "Logout",
       icon: <LogOut size={20} />,
