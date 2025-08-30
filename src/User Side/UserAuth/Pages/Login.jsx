@@ -24,13 +24,13 @@ export default function UserLogin() {
 
       localStorage.setItem("userToken", response.accessToken);
       localStorage.setItem("refreshToken", response.refreshToken);
-      toast.success("Loggined Successfully");
+      toast.success("User Loggined Successfully");
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
     } catch (error) {
-      console.error("Faield to login", error);
-      toast.error("failed to login");
+      console.error("User login failed", error);
+      toast.error("User login faield");
     } finally {
       setIsLoading(false);
     }
